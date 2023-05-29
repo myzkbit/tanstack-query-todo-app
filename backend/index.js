@@ -25,4 +25,28 @@ app.post('/todos/create', async (req, res) => {
   return res.json(todo);
 });
 
+app.delete('/todos/:id', async (req, res) => {
+  const { id } = req.params;
+  const todo = await prisma.todo.delete({
+    where: {
+      id: Number(id),
+    },
+  });
+  return res.json(todo);
+});
+
+app.patch('/todos/:id', async (req, res) => {
+  const { id } = req.params;
+  const { isCompleted } = req.body;
+  const todo = await prisma.todo.update({
+    where: {
+      id: Number(id),
+    },
+    data: {
+      isCompleted,
+    },
+  });
+  return res.json(todo);
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
