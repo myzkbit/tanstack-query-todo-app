@@ -6,12 +6,23 @@ const app = express();
 const port = 3001;
 
 app.use(cors())
+app.use(express.json());
 
 const prisma = new PrismaClient();
 app.get('/todos', async (req, res) => {
-  return res.status(500).json({message: 'internal servre error.'})
-  // const todos = await prisma.todo.findMany();
-  // return res.json(todos);
+  const todos = await prisma.todo.findMany();
+  return res.json(todos);
+});
+
+app.post('/todos/create', async (req, res) => {
+  const { name } = req.body;
+  const todo = await prisma.todo.create({
+    data: {
+      name,
+      isCompleted: false,
+    },
+  });
+  return res.json(todo);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
